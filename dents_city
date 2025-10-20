@@ -1,0 +1,67 @@
+-- Database: dents_city
+CREATE DATABASE IF NOT EXISTS dents_city;
+USE dents_city;
+
+-- Users table (for dentists and patients)
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('dentist', 'patient') NOT NULL,
+    clinic_id INT NULL, -- For dentists/patients associated with a clinic
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Clinics table
+CREATE TABLE clinics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    address TEXT,
+    phone VARCHAR(20),
+    subscription_tier ENUM('free', 'premium') DEFAULT 'free',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Appointments table
+CREATE TABLE appointments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id INT NOT NULL,
+    dentist_id INT NOT NULL,
+    clinic_id INT NOT NULL,
+    appointment_date DATETIME NOT NULL,
+    purpose ENUM('braces', 'filling', 'cleaning', 'extraction', 'other') NOT NULL,
+    status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
+    notes TEXT,
+    cost DECIMAL(10,2) DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (patient_id) REFERENCES users(id),
+    FOREIGN KEY (dentist_id) REFERENCES users(id),
+    FOREIGN KEY (clinic_id) REFERENCES clinics(id)
+);
+
+-- Treatments table (for analytics)
+CREATE TABLE treatments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    base_cost DECIMAL(10,2) NOT NULL
+);
+
+-- Insert sample treatments
+INSERT INTO treatments (name, base_cost) VALUES
+('braces', 500.00),
+('filling', 150.00),
+('cleaning', 100.00),
+('extraction', 200.00),
+('other', 0.00);
+
+-- Analytics logs (for tracking visits, revenue, etc.)
+CREATE TABLE analytics_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    clinic_id INT NOT NULL,
+    month YEARMONTH NOT NULL,
+    purpose ENUM('braces', 'filling', 'cleaning', 'extraction', 'other') NOT NULL,
+    count INT DEFAULT 0,
+    revenue DECIMAL(10,2) DEFAULT 0.00,
+    FOREIGN KEY (clinic_id) REFERENCES clinics(id)
+);

@@ -1,0 +1,122 @@
+/* styles.css - Dents-City Styling */
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #f4f4f4; /* Light background for contrast */
+    color: #333;
+    line-height: 1.6;
+}
+
+h1, h2 {
+    font-family: 'Days One', cursive;
+    color: #35C1B5; /* Primary color for headings */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px 0;
+}
+
+input, select, button {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #D9D9D9; /* Secondary color for borders */
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #35C1B5;
+}
+
+button {
+    background-color: #35C1B5;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2a9a8f; /* Darker shade of primary */
+}
+
+/* List Styles */
+ul {
+    list-style: none;
+    width: 100%;
+    max-width: 600px;
+}
+
+li {
+    background-color: #D9D9D9;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Error and Success Messages */
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+}
+
+/* Links */
+a {
+    color: #35C1B5;
+    text-decoration: none;
+    margin: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    form {
+        max-width: 100%;
+    }
+    
+    ul {
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+}
