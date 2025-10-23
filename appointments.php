@@ -1,31 +1,21 @@
 <?php
-// appointments.php - Create and manage appointments
+// appointments.php - Appointment management (mock)
 session_start();
-require 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
 $role = $_SESSION['role'];
+$mock_appointments = [
+    ['date' => '2023-10-01 10:00', 'purpose' => 'cleaning', 'status' => 'confirmed']
+];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $role == 'patient') {
-    $dentist_id = $_POST['dentist_id'];
-    $clinic_id = $_POST['clinic_id'];
-    $date = $_POST['date'];
-    $purpose = $_POST['purpose'];
-
-    $stmt = $pdo->prepare("INSERT INTO appointments (patient_id, dentist_id, clinic_id, appointment_date, purpose) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$user_id, $dentist_id, $clinic_id, $date, $purpose]);
-    $success = "Appointment booked!";
+    $mock_appointments[] = ['date' => $_POST['date'], 'purpose' => $_POST['purpose'], 'status' => 'pending'];
+    $success = "Booked!";
 }
-
-// Fetch user's appointments
-$stmt = $pdo->prepare("SELECT * FROM appointments WHERE " . ($role == 'patient' ? 'patient_id' : 'dentist_id') . " = ?");
-$stmt->execute([$user_id]);
-$appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -42,8 +32,6 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1>Manage Appointments</h1>
         <?php if ($role == 'patient'): ?>
             <form method="POST">
-                <input type="number" name="dentist_id" placeholder="Dentist ID" required>
-                <input type="number" name="clinic_id" placeholder="Clinic ID" required>
                 <input type="datetime-local" name="date" required>
                 <select name="purpose" required>
                     <option value="braces">Braces</option>
@@ -52,15 +40,15 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <option value="extraction">Extraction</option>
                     <option value="other">Other</option>
                 </select>
-                <button type="submit">Book Appointment</button>
+                <button type="submit">Book</button>
             </form>
             <?php if (isset($success)) echo "<p class='success'>$success</p>"; ?>
         <?php endif; ?>
         
         <h2>Your Appointments</h2>
         <ul>
-            <?php foreach ($appointments as $appt): ?>
-                <li><?php echo htmlspecialchars($appt['appointment_date'] . ' - ' . $appt['purpose'] . ' (' . $appt['status'] . ')'); ?></li>
+            <?php foreach ($mock_appointments as $appt): ?>
+                <li><?php echo $appt['date'] . ' - ' . $appt['purpose'] . ' (' . $appt['status'] . ')'; ?></li>
             <?php endforeach; ?>
         </ul>
         <a href="dashboard.php">Back to Dashboard</a>

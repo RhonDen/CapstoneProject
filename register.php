@@ -1,34 +1,17 @@
 <?php
-// register.php - Registration form
+// register.php - Registration (mock in session)
 session_start();
-require 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
     $password = $_POST['password'];
-    $role = $_POST['role']; // 'dentist' or 'patient'
-    $clinic_id = isset($_POST['clinic_id']) ? $_POST['clinic_id'] : NULL;
+    $role = $_POST['role'];
 
-    // Validate input
-    if (empty($username) || empty($email) || empty($password) || empty($role)) {
-        $error = "Please fill in all fields.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = "Invalid email format.";
-    } else {
-        // Hash password
-        $password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-        // Insert user
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash, role, clinic_id) VALUES (?, ?, ?, ?, ?)");
-        try {
-            $stmt->execute([$username, $email, $password_hash, $role, $clinic_id]);
-            header("Location: login.php");
-            exit;
-        } catch (PDOException $e) {
-            $error = "Registration failed: " . $e->getMessage();
-        }
-    }
+    // Mock storage
+    if (!isset($_SESSION['mock_users'])) $_SESSION['mock_users'] = [];
+    $_SESSION['mock_users'][] = ['id' => count($_SESSION['mock_users']) + 1, 'username' => $username, 'password' => $password, 'role' => $role];
+    header("Location: login.php");
+    exit;
 }
 ?>
 
@@ -44,20 +27,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="container">
         <h1>Register for Dents-City</h1>
-        <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
         <form method="POST">
             <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
             <select name="role" required>
                 <option value="">Select Role</option>
                 <option value="patient">Patient</option>
                 <option value="dentist">Dentist</option>
             </select>
-            <input type="number" name="clinic_id" placeholder="Clinic ID (optional)">
             <button type="submit">Register</button>
         </form>
-        <p>Already have an account? <a href="login.php">Login here</a></p>
+        <p>Have an account? <a href="login.php">Login</a></p>
     </div>
 </body>
 </html>
